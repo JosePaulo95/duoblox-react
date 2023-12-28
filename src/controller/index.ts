@@ -267,3 +267,25 @@ export const isEmptyPiece = (piece: Block) => {
     return false;
   }
 };
+
+export const generateRefillFor = (grid: Grid): Grid => {
+  // Criar uma nova matriz com a mesma quantidade de linhas e colunas que a matriz original
+  let complement: Grid = [];
+
+  // Percorrer cada linha da matriz original
+  for (let i = 0; i < grid.length; i++) {
+    // Criar uma nova linha para a matriz complementar
+    let newRow: number[] = [];
+
+    // Percorrer cada coluna da linha atual
+    for (let j = 0; j < grid[i].length; j++) {
+      // Se o valor original for 0, adicionar 1 ao complementar, caso contrário, adicionar 0
+      newRow.push(grid[i][j] === 0 ? 1 : 0);
+    }
+
+    // Adicionar a nova linha ao complementar
+    complement.push(newRow);
+  }
+
+  return complement;
+};

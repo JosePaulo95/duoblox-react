@@ -1,5 +1,5 @@
 export const configs = {
-  width: 5,
-  height: 11,
-  playable_height: 6,
+  width: 3,
+  height: 6,
+  playable_height: 3,
 };

@@ -7,6 +7,7 @@ import {
   limitsPiece,
   nextPiece,
   randomPiece,
+  refill,
 } from '../../factories/PieceFactory';
 import { Grid } from '../../types';
 import { Block, BlocksState } from '../../types/block';
@@ -20,7 +21,7 @@ import {
 } from './collision';
 
 const INITIAL_STATE: BlocksState = {
-  piece: randomPiece(),
+  piece: refill(),
   board: emptyPiece(),
   limits: limitsPiece(),
   joinning: erasedPiece(),
@@ -128,7 +129,7 @@ export default function blocks(
       return {
         ...state,
         piece: {
-          ...nextPiece(state),
+          ...refill(state),
         },
       };
     case 'board/combinations':
@@ -163,7 +164,7 @@ export default function blocks(
         },
       };
     case 'blocks/reset':
-      return { ...INITIAL_STATE, piece: randomPiece() };
+      return { ...INITIAL_STATE, piece: refill(state.board) };
     case 'floating/fall':
       for (let i = 0; i < state.floating.length; i++) {
         testFloatingFallCollision(state.floating[i], state.board, state.limits, i);
