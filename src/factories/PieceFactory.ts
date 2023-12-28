@@ -95,7 +95,7 @@ export const erasedPiece = () => {
   return createPiece([wrapped]);
 };
 
-export const emptyPiece = () => {
+export const emptyGrid = () => {
   const grid: Grid = EMPTY_GRID();
   return wrapGrid(grid, configs.width, configs.height);
 };

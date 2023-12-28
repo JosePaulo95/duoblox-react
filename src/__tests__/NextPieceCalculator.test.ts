@@ -1,7 +1,7 @@
 import { EMPTY_GRID, PIECE_I_GRIDS, PIECE_L_GRIDS, PIECE_Z_GRIDS } from '../constants';
 import { calcAvgHeight, countCombinations, wrap, wrapGrid } from '../controller';
 import { calcMaxMatches, getMaxY, getPossiveisX } from '../factories/NextPieceCalculator';
-import { createPiece, emptyPiece } from '../factories/PieceFactory';
+import { createPiece, emptyGrid } from '../factories/PieceFactory';
 import { Grid } from '../types';
 
 test('calcula x possíveis adequadamente da peça z', () => {

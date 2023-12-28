@@ -2,7 +2,7 @@ import { BoardState, getCurrentGrid, join, removeMatches } from '../../controlle
 import { createParticles } from '../../factories/ParticlesData';
 import {
   createPiece,
-  emptyPiece,
+  emptyGrid,
   erasedPiece,
   limitsPiece,
   nextPiece,
@@ -22,7 +22,7 @@ import {
 
 const INITIAL_STATE: BlocksState = {
   piece: refill(),
-  board: emptyPiece(),
+  board: emptyGrid(),
   limits: limitsPiece(),
   joinning: erasedPiece(),
   floating: [],

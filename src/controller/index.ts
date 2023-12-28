@@ -1,4 +1,4 @@
-import { createPiece, emptyPiece } from '../factories/PieceFactory';
+import { createPiece, emptyGrid } from '../factories/PieceFactory';
 import { Block, Grid } from '../types';
 import { splitDisconnectedGraphs } from './graph';
 
@@ -137,9 +137,9 @@ export const splitDisconnected = (grid: Grid): Block[] => {
 };
 
 export const removeMatches = (board: number[][]): BoardState => {
-  const b: Grid = emptyPiece();
-  const f: Grid = emptyPiece();
-  const m: Grid = emptyPiece();
+  const b: Grid = emptyGrid();
+  const f: Grid = emptyGrid();
+  const m: Grid = emptyGrid();
 
   for (let i = board.length - 1; i >= 0; i--) {
     if (board[i].every((cell) => cell !== 0)) {
@@ -152,7 +152,7 @@ export const removeMatches = (board: number[][]): BoardState => {
   const splitted = splitDisconnected(b);
   const grounded = splitted
     .filter((i) => !getCurrentGrid({ ...i, y: i.y + 1 }))
-    .reduce((cur, acc) => join(cur, getCurrentGrid(acc) || emptyPiece()), emptyPiece());
+    .reduce((cur, acc) => join(cur, getCurrentGrid(acc) || emptyGrid()), emptyGrid());
   const floating = splitted.filter((i) => getCurrentGrid({ ...i, y: i.y + 1 }));
 
   // const disc = splitDisconnected(b);
@@ -215,7 +215,18 @@ export const hasAnyCombinations = (board: Grid): boolean => {
 };
 
 export const countExactCombinations = (board: Grid): number => {
-  return board.filter((row) => row.every((i) => i > 0)).length;
+  const isUniform = (arr: number[]) => arr.every(val => val === arr[0] && val > 0);
+
+  // Contar linhas uniformes
+  const rowCount = board.reduce((count, row) => count + (isUniform(row) ? 1 : 0), 0);
+
+  // Contar colunas uniformes
+  const colCount = board[0].reduce((count, _, colIndex) => {
+    const column = board.map(row => row[colIndex]);
+    return count + (isUniform(column) ? 1 : 0);
+  }, 0);
+
+  return rowCount + colCount;
 };
 
 export const countCombinations = (board: Grid, piece: Block) => {
