@@ -12,6 +12,7 @@ import {
 } from '../constants';
 import {
   BoardState,
+  fillGridRandomly,
   generateRefillFor,
   getCurrentGrid,
   join,
@@ -51,7 +52,8 @@ const calcGridPosFloatingJoin = (boardState: BlocksState): Grid => {
 export const refill = (boardState?: BlocksState): Piece => {
   const currentGrid = boardState ? calcGridPosFloatingJoin(boardState).slice(-configs.playable_height) : emptyPlayablePiece();
   const grid = generateRefillFor(currentGrid);
-  const wrapped = wrapGrid(grid, configs.width, configs.height)
+  const typed = fillGridRandomly(grid, [1, 2, 3])
+  const wrapped = wrapGrid(typed, configs.width, configs.height)
   const piece = createPiece([wrapped])
   return piece;
 };

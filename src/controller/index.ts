@@ -289,3 +289,48 @@ export const generateRefillFor = (grid: Grid): Grid => {
 
   return complement;
 };
+
+// Função para embaralhar um array (Fisher-Yates shuffle)
+function shuffleArray(array: number[]): number[] {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+// Função para criar o "random bag"
+function createRandomBag(types: number[], gridSize: number): number[] {
+  let bag: number[] = [];
+  while (bag.length < gridSize) {
+    // Adiciona uma cópia embaralhada dos tipos ao saco
+    bag = bag.concat(shuffleArray([...types]));
+  }
+  // Corta o saco para ter o tamanho exato da grid
+  return bag.slice(0, gridSize);
+}
+
+export const fillGridRandomly = (grid: Grid, types: number[]): Grid => {
+  // Contar quantas células precisam ser preenchidas (quantidade de 1s na matriz)
+  const cellsToFill = grid.flat().filter(x => x === 1).length;
+
+  // Criar um saco aleatório de tipos
+  const randomBag = createRandomBag(types, cellsToFill);
+
+  // Criar uma cópia da grid para modificar
+  let newGrid: Grid = JSON.parse(JSON.stringify(grid));
+
+  // Índice para acompanhar a posição atual no saco aleatório
+  let bagIndex = 0;
+
+  // Preencher a grid com os tipos do saco aleatório
+  for (let i = 0; i < newGrid.length; i++) {
+    for (let j = 0; j < newGrid[i].length; j++) {
+      if (newGrid[i][j] === 1) {
+        newGrid[i][j] = randomBag[bagIndex++];
+      }
+    }
+  }
+
+  return newGrid;
+};
