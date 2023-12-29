@@ -7,7 +7,7 @@ import {
   isEmptyPiece,
 } from '../controller';
 import { configs } from '../configs';
-import { BoardInput } from '../types/input';
+import { BlockTouchInput, BoardInput } from '../types/input';
 
 //TODO considerar o uso de UseCallbacks
 
@@ -51,27 +51,26 @@ export const handlePieceGoingDown = (
 };
 
 export const handleUserInput = (
-  input_horizontal: BoardInput,
-  input_vertical: BoardInput,
+  input_grid: BlockTouchInput[][],
   dispatch: Dispatch<any>,
 ) => {
-  if (input_horizontal.delta > 0) {
-    dispatch({ type: 'board/move-right', payload: input_horizontal.index });
-    dispatch({ type: 'audio/play', payload: 'play_move' });
-  }
-  if (input_horizontal.delta < 0) {
-    dispatch({ type: 'board/move-left', payload: input_horizontal.index });
-    dispatch({ type: 'audio/play', payload: 'play_move' });
-  }
+  // if (input_horizontal.delta > 0) {
+  //   dispatch({ type: 'board/move-right', payload: input_horizontal.index });
+  //   dispatch({ type: 'audio/play', payload: 'play_move' });
+  // }
+  // if (input_horizontal.delta < 0) {
+  //   dispatch({ type: 'board/move-left', payload: input_horizontal.index });
+  //   dispatch({ type: 'audio/play', payload: 'play_move' });
+  // }
 
-  if (input_vertical.delta > 0) {
-    dispatch({ type: 'board/move-down', payload: input_vertical.index });
-    dispatch({ type: 'audio/play', payload: 'play_move' });
-  }
-  if (input_vertical.delta < 0) {
-    dispatch({ type: 'board/move-up', payload: input_vertical.index });
-    dispatch({ type: 'audio/play', payload: 'play_move' });
-  }
+  // if (input_vertical.delta > 0) {
+  //   dispatch({ type: 'board/move-down', payload: input_vertical.index });
+  //   dispatch({ type: 'audio/play', payload: 'play_move' });
+  // }
+  // if (input_vertical.delta < 0) {
+  //   dispatch({ type: 'board/move-up', payload: input_vertical.index });
+  //   dispatch({ type: 'audio/play', payload: 'play_move' });
+  // }
 };
 
 export const handleResetPiece = (blocks: any, dispatch: Dispatch<any>) => {

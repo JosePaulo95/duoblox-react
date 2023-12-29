@@ -1,4 +1,5 @@
 import { BoardState, getCurrentGrid, join, removeMatches } from '../../controller';
+import { cleanInputGrid } from '../../factories/InputFactory';
 import { createParticles } from '../../factories/ParticlesData';
 import {
   createPiece,
@@ -164,7 +165,7 @@ export default function blocks(
         },
       };
     case 'blocks/reset':
-      return { ...INITIAL_STATE, piece: refill(state.board) };
+      return { ...INITIAL_STATE, piece: refill(state) };
     case 'floating/fall':
       for (let i = 0; i < state.floating.length; i++) {
         testFloatingFallCollision(state.floating[i], state.board, state.limits, i);
