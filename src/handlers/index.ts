@@ -6,6 +6,7 @@ import {
   hasAnyCombinations,
   isEmptyPiece,
 } from '../controller';
+import { configs } from '../configs';
 
 //TODO considerar o uso de UseCallbacks
 
@@ -18,7 +19,7 @@ export const handleMatches = async (
   ticks: number,
   dispatch: Dispatch<any>,
 ): Promise<void> => {
-  const matches_count = countExactCombinations(blocks.board);
+  const matches_count = countExactCombinations(blocks.board, configs.playable_height);
   if (matches_count > 0) {
     dispatch({ type: 'board/combinations' });
     dispatch({ type: 'score/increment', payload: matches_count });

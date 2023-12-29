@@ -1,3 +1,4 @@
+import { configs } from '../configs';
 import { createPiece, emptyGrid } from '../factories/PieceFactory';
 import { Block, Grid } from '../types';
 import { splitDisconnectedGraphs } from './graph';
@@ -136,20 +137,65 @@ export const splitDisconnected = (grid: Grid): Block[] => {
   return blocks;
 };
 
-export const removeMatches = (board: number[][]): BoardState => {
-  const b: Grid = emptyGrid();
-  const f: Grid = emptyGrid();
-  const m: Grid = emptyGrid();
+const splitMatchRemaining = (board: Grid, playable_height = board.length): { matching: Grid; remaining: Grid } => {
+  const rows = board.length;
+  const cols = board[0].length;
+  let matching = Array.from({ length: rows }, () => Array(cols).fill(0));
+  let remaining = Array.from({ length: rows }, () => Array(cols).fill(0));
 
-  for (let i = board.length - 1; i >= 0; i--) {
-    if (board[i].every((cell) => cell !== 0)) {
-      m[i] = board[i].map((i) => 10);
+  // Função auxiliar para verificar se todos os elementos são iguais em uma array
+  const allEqual = (arr: number[]): boolean => arr.every(val => val === arr[0] && val !== 0);
+
+  // Marcar combinações nas linhas
+  for (let i = 0; i < rows; i++) {
+    if (allEqual(board[i])) {
+      matching[i] = matching[i].map(() => 10);
     } else {
-      b[i] = board[i];
+      remaining[i] = board[i].slice();
     }
   }
 
-  const splitted = splitDisconnected(b);
+  // Marcar combinações nas colunas
+  for (let j = 0; j < cols; j++) {
+    let col = board.map(row => row[j]).slice(-playable_height);
+    if (allEqual(col)) {
+      for (let i = 0; i < playable_height; i++) {
+        matching[rows - 1 - i][j] = 10;
+        remaining[rows - 1 - i][j] = 0;
+      }
+    }
+  }
+
+  // Ajustando 'remaining' com base em 'matching'
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      if (matching[i][j] === 10) {
+        remaining[i][j] = 0;
+      }
+    }
+  }
+
+  return {
+    matching,
+    remaining
+  };
+}
+
+export const removeMatches = (board: number[][]): BoardState => {
+  // const b: Grid = emptyGrid();
+  const f: Grid = emptyGrid();
+  // const m: Grid = emptyGrid();
+
+  let { matching, remaining } = splitMatchRemaining(board, configs.playable_height)
+  // for (let i = board.length - 1; i >= 0; i--) {
+  //   if (board[i].every((cell) => cell !== 0)) {
+  //     m[i] = board[i].map((i) => 10);
+  //   } else {
+  //     b[i] = board[i];
+  //   }
+  // }
+
+  const splitted = splitDisconnected(remaining);
   const grounded = splitted
     .filter((i) => !getCurrentGrid({ ...i, y: i.y + 1 }))
     .reduce((cur, acc) => join(cur, getCurrentGrid(acc) || emptyGrid()), emptyGrid());
@@ -170,7 +216,7 @@ export const removeMatches = (board: number[][]): BoardState => {
   const aux = {
     remaining: grounded,
     floating: floating,
-    matching: splitDisconnected(m),
+    matching: splitDisconnected(matching),
   };
 
   return aux;
@@ -214,7 +260,14 @@ export const hasAnyCombinations = (board: Grid): boolean => {
   return board.some((row) => row.every((i) => i > 0));
 };
 
-export const countExactCombinations = (board: Grid): number => {
+let prev: string;
+
+export const countExactCombinations = (board: Grid, playable_height = board.length): number => {
+  const cur = board.flat().join('')
+  if (cur != prev) {
+    prev = cur
+  }
+
   const isUniform = (arr: number[]) => arr.every(val => val === arr[0] && val > 0);
 
   // Contar linhas uniformes
@@ -222,7 +275,7 @@ export const countExactCombinations = (board: Grid): number => {
 
   // Contar colunas uniformes
   const colCount = board[0].reduce((count, _, colIndex) => {
-    const column = board.map(row => row[colIndex]);
+    const column = board.map(row => row[colIndex]).slice(-playable_height);
     return count + (isUniform(column) ? 1 : 0);
   }, 0);
 
