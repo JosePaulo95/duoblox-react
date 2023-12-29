@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.1",
+    "@use-gesture/react": "^10.3.0",
     "audio-loader": "^1.0.3",
     "framer-motion": "^8.5.4",
     "game-inputs": "^0.7.0",

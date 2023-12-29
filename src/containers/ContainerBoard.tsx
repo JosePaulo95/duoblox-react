@@ -13,7 +13,7 @@ import {
   handleResetPiece,
   handleUserInput,
 } from '../handlers';
-import { userController } from '../input/keyboardInput';
+import { keyboardController } from '../input/keyboardInput';
 import { BlocksState } from '../types/block';
 
 type RootState = {
@@ -40,8 +40,8 @@ function ContainerBoard({ blocks, ticks, dispatch }: ContainerBoardProps) {
       handleFloatingsGoingDown(blocks, ticks, dispatch);
       handlePieceGoingDown(blocks, ticks, dispatch);
       handleUserInput(
-        userController.current_input_x,
-        userController.current_input_y,
+        keyboardController.input_horizontal,
+        keyboardController.input_vertical,
         dispatch,
       );
     } catch (collision) {
