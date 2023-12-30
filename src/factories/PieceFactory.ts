@@ -15,13 +15,14 @@ import {
   fillGridRandomly,
   generateRefillFor,
   getCurrentGrid,
+  getGridFromCells,
   join,
   transform,
   wrap,
   wrapGrid,
 } from '../controller';
 import { Block as Piece, Grid } from '../types';
-import { Block, BlocksState } from '../types/block';
+import { Block, BlocksState, Cell, CellGrid } from '../types/block';
 import { calcPiecesFitness } from './NextPieceCalculator';
 
 const allPieces = (): Block[] => {
@@ -44,17 +45,19 @@ const calcGridPosFloatingJoin = (boardState: BlocksState): Grid => {
   );
   const floatingJoinned = floatingGrids
     .filter(Boolean)
-    .reduce((acc, curr) => join(acc!, curr!), boardState.board);
+    .reduce((acc, curr) => join(acc!, curr!), getGridFromCells(boardState.board));
 
-  return floatingJoinned || boardState.board;
+  return floatingJoinned || getGridFromCells(boardState.board);
 };
 
 export const refill = (boardState?: BlocksState): Piece => {
-  const currentGrid = boardState ? calcGridPosFloatingJoin(boardState).slice(-configs.playable_height) : emptyPlayablePiece();
+  const currentGrid = boardState
+    ? calcGridPosFloatingJoin(boardState).slice(-configs.playable_height)
+    : emptyPlayablePiece();
   const grid = generateRefillFor(currentGrid);
-  const typed = fillGridRandomly(grid, [1, 2, 1, 1])
-  const wrapped = wrapGrid(typed, configs.width, configs.height)
-  const piece = createPiece([wrapped])
+  const typed = fillGridRandomly(grid, [1, 2, 1, 1]);
+  const wrapped = wrapGrid(typed, configs.width, configs.height);
+  const piece = createPiece([wrapped]);
   return piece;
 };
 
@@ -100,6 +103,13 @@ export const emptyGrid = () => {
   return wrapGrid(grid, configs.width, configs.height);
 };
 
+export const emptyCellGrid = () => {
+  const grid: Grid = EMPTY_GRID();
+  const wrapped = wrapGrid(grid, configs.width, configs.height);
+  const as_cells = createCellGrid(wrapped);
+  return as_cells;
+};
+
 export const emptyPlayablePiece = () => {
   const grid: Grid = EMPTY_GRID();
   return wrapGrid(grid, configs.width, configs.playable_height);
@@ -108,6 +118,11 @@ export const emptyPlayablePiece = () => {
 export const limitsPiece = () => {
   const grid: Grid = LIMIT_GRID(configs.width, configs.height, configs.playable_height);
   return wrapGrid(grid, configs.width, configs.height);
+};
+
+export const createCellGrid = (grid: Grid): CellGrid => {
+  const as_cells = grid.map((row) => row.map((n) => ({ type: n } as Cell)));
+  return as_cells;
 };
 
 export const createPiece = (initial_grid: Grid[]): Piece => {
@@ -121,6 +136,7 @@ export const createPiece = (initial_grid: Grid[]): Piece => {
   };
   return piece;
 };
+
 const calcAverageHeight = (grid: Grid): number => {
   let totalHeight = 0;
   const numberOfColumns = grid.length;

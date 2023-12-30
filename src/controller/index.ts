@@ -1,6 +1,7 @@
 import { configs } from '../configs';
 import { createPiece, emptyGrid } from '../factories/PieceFactory';
 import { Block, Grid } from '../types';
+import { CellGrid } from '../types/block';
 import { splitDisconnectedGraphs } from './graph';
 
 export const getCurrentGrid = (block: Block): Grid | undefined => {
@@ -10,6 +11,11 @@ export const getCurrentGrid = (block: Block): Grid | undefined => {
     block.y,
   );
   return b;
+};
+
+export const getGridFromCells = (cell_grid: CellGrid): Grid => {
+  const grid = cell_grid.map((row) => row.map((cell) => cell.type));
+  return grid;
 };
 
 export const wrapGrid = (
@@ -137,14 +143,18 @@ export const splitDisconnected = (grid: Grid): Block[] => {
   return blocks;
 };
 
-const splitMatchRemaining = (board: Grid, playable_height = board.length): { matching: Grid; remaining: Grid } => {
+const splitMatchRemaining = (
+  board: Grid,
+  playable_height = board.length,
+): { matching: Grid; remaining: Grid } => {
   const rows = board.length;
   const cols = board[0].length;
-  let matching = Array.from({ length: rows }, () => Array(cols).fill(0));
-  let remaining = Array.from({ length: rows }, () => Array(cols).fill(0));
+  const matching = Array.from({ length: rows }, () => Array(cols).fill(0));
+  const remaining = Array.from({ length: rows }, () => Array(cols).fill(0));
 
   // Função auxiliar para verificar se todos os elementos são iguais em uma array
-  const allEqual = (arr: number[]): boolean => arr.every(val => val === arr[0] && val !== 0);
+  const allEqual = (arr: number[]): boolean =>
+    arr.every((val) => val === arr[0] && val !== 0);
 
   // Marcar combinações nas linhas
   for (let i = 0; i < rows; i++) {
@@ -157,7 +167,7 @@ const splitMatchRemaining = (board: Grid, playable_height = board.length): { mat
 
   // Marcar combinações nas colunas
   for (let j = 0; j < cols; j++) {
-    let col = board.map(row => row[j]).slice(-playable_height);
+    const col = board.map((row) => row[j]).slice(-playable_height);
     if (allEqual(col)) {
       for (let i = 0; i < playable_height; i++) {
         matching[rows - 1 - i][j] = 10;
@@ -177,16 +187,16 @@ const splitMatchRemaining = (board: Grid, playable_height = board.length): { mat
 
   return {
     matching,
-    remaining
+    remaining,
   };
-}
+};
 
 export const removeMatches = (board: number[][]): BoardState => {
   // const b: Grid = emptyGrid();
   const f: Grid = emptyGrid();
   // const m: Grid = emptyGrid();
 
-  let { matching, remaining } = splitMatchRemaining(board, configs.playable_height)
+  const { matching, remaining } = splitMatchRemaining(board, configs.playable_height);
   // for (let i = board.length - 1; i >= 0; i--) {
   //   if (board[i].every((cell) => cell !== 0)) {
   //     m[i] = board[i].map((i) => 10);
@@ -262,20 +272,23 @@ export const hasAnyCombinations = (board: Grid): boolean => {
 
 let prev: string;
 
-export const countExactCombinations = (board: Grid, playable_height = board.length): number => {
-  const cur = board.flat().join('')
+export const countExactCombinations = (
+  board: Grid,
+  playable_height = board.length,
+): number => {
+  const cur = board.flat().join('');
   if (cur != prev) {
-    prev = cur
+    prev = cur;
   }
 
-  const isUniform = (arr: number[]) => arr.every(val => val === arr[0] && val > 0);
+  const isUniform = (arr: number[]) => arr.every((val) => val === arr[0] && val > 0);
 
   // Contar linhas uniformes
   const rowCount = board.reduce((count, row) => count + (isUniform(row) ? 1 : 0), 0);
 
   // Contar colunas uniformes
   const colCount = board[0].reduce((count, _, colIndex) => {
-    const column = board.map(row => row[colIndex]).slice(-playable_height);
+    const column = board.map((row) => row[colIndex]).slice(-playable_height);
     return count + (isUniform(column) ? 1 : 0);
   }, 0);
 
@@ -334,12 +347,12 @@ export const isEmptyPiece = (piece: Block) => {
 
 export const generateRefillFor = (grid: Grid): Grid => {
   // Criar uma nova matriz com a mesma quantidade de linhas e colunas que a matriz original
-  let complement: Grid = [];
+  const complement: Grid = [];
 
   // Percorrer cada linha da matriz original
   for (let i = 0; i < grid.length; i++) {
     // Criar uma nova linha para a matriz complementar
-    let newRow: number[] = [];
+    const newRow: number[] = [];
 
     // Percorrer cada coluna da linha atual
     for (let j = 0; j < grid[i].length; j++) {
@@ -376,13 +389,13 @@ function createRandomBag(types: number[], gridSize: number): number[] {
 
 export const fillGridRandomly = (grid: Grid, types: number[]): Grid => {
   // Contar quantas células precisam ser preenchidas (quantidade de 1s na matriz)
-  const cellsToFill = grid.flat().filter(x => x === 1).length;
+  const cellsToFill = grid.flat().filter((x) => x === 1).length;
 
   // Criar um saco aleatório de tipos
   const randomBag = createRandomBag(types, cellsToFill);
 
   // Criar uma cópia da grid para modificar
-  let newGrid: Grid = JSON.parse(JSON.stringify(grid));
+  const newGrid: Grid = JSON.parse(JSON.stringify(grid));
 
   // Índice para acompanhar a posição atual no saco aleatório
   let bagIndex = 0;

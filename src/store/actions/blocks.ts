@@ -22,6 +22,11 @@ type PieceJoinAction = {
   type: 'piece/join';
 };
 
+type BoardTouchAction = {
+  type: 'board/touch';
+  payload: { x: number; y: number };
+};
+
 type FloatingJoinAction = {
   type: 'floating/join';
   payload: number; //index
@@ -52,6 +57,7 @@ export type BlocksAction =
   | PieceJoinAction
   | FloatingJoinAction
   | PieceResetAction
+  | BoardTouchAction
   | BoardCombinationsAction
   | BlocksResetAction
   | FloatingFallAction;

@@ -1,8 +1,16 @@
-import { BoardState, getCurrentGrid, join, removeMatches } from '../../controller';
+import {
+  BoardState,
+  getCurrentGrid,
+  getGridFromCells,
+  join,
+  removeMatches,
+} from '../../controller';
 import { cleanInputGrid } from '../../factories/InputFactory';
 import { createParticles } from '../../factories/ParticlesData';
 import {
+  createCellGrid,
   createPiece,
+  emptyCellGrid,
   emptyGrid,
   erasedPiece,
   limitsPiece,
@@ -23,7 +31,7 @@ import {
 
 const INITIAL_STATE: BlocksState = {
   piece: refill(),
-  board: emptyGrid(),
+  board: emptyCellGrid(),
   limits: limitsPiece(),
   joinning: erasedPiece(),
   floating: [],
@@ -50,7 +58,7 @@ export default function blocks(
         return state;
       }
       // grid_aux = getCurrentGrid(state.joinning);
-      testDownCollision(state.piece, state.board);
+      testDownCollision(state.piece, getGridFromCells(state.board));
       return {
         ...state,
         piece: { ...state.piece, y: state.piece.y + 1, anim_state: 'follow' },
@@ -63,7 +71,10 @@ export default function blocks(
       // eslint-disable-next-line no-constant-condition
       for (let i = 0; i < 20; i++) {
         try {
-          testDownCollision({ ...state.piece, y: state.piece.y + distance }, state.board);
+          testDownCollision(
+            { ...state.piece, y: state.piece.y + distance },
+            getGridFromCells(state.board),
+          );
           distance++;
         } catch (error) {
           break;
@@ -73,26 +84,29 @@ export default function blocks(
         ...state,
         piece: { ...state.piece, y: state.piece.y + distance, anim_state: 'follow' },
       };
-    case 'piece/move-right':
-      testSideCollision(state.piece, state.board, 1);
+    case 'board/touch':
+      boardCopy = state.board;
+      // boardCopy[action.payload.x][action.payload.y].anim_state = 'shaking';
       return {
         ...state,
-        piece: { ...state.piece, x: state.piece.x + 1, anim_state: 'follow' },
+        board: boardCopy,
       };
     case 'piece/move-left':
-      testSideCollision(state.piece, state.board, -1);
+      testSideCollision(state.piece, getGridFromCells(state.board), -1);
       return {
         ...state,
         piece: { ...state.piece, x: state.piece.x - 1 },
       };
     case 'piece/rotate':
-      pieceCopy = testRotationCollision(state.piece, state.board);
+      pieceCopy = testRotationCollision(state.piece, getGridFromCells(state.board));
       return {
         ...state,
         piece: pieceCopy,
       };
     case 'piece/join':
       grid_aux = getCurrentGrid(state.piece);
+      boardCopy = getGridFromCells(state.board);
+
       if (grid_aux) {
         pieceCopy = {
           ...createPiece([grid_aux]),
@@ -102,7 +116,7 @@ export default function blocks(
         return {
           ...state,
           joinning: pieceCopy,
-          board: join(grid_aux, state.board),
+          board: createCellGrid(join(grid_aux, boardCopy)),
           piece: erasedPiece(),
         };
       }
@@ -120,13 +134,13 @@ export default function blocks(
         return {
           ...state,
           joinning: pieceCopy,
-          board: join(grid_aux, state.board),
+          board: createCellGrid(join(grid_aux, getGridFromCells(state.board))),
           floating: floatingCopy,
         };
       }
       return state;
     case 'piece/reset':
-      testJoinCollision(state.board, state.limits);
+      testJoinCollision(getGridFromCells(state.board), state.limits);
       return {
         ...state,
         piece: {
@@ -141,7 +155,7 @@ export default function blocks(
         remaining: boardCopy,
         floating: floatingCopy,
         matching: matchingCopy,
-      } = removeMatches(state.board) as BoardState);
+      } = removeMatches(getGridFromCells(state.board)) as BoardState);
       matchingRows = matchingCopy.map((i) => ({
         ...i,
         anim_state: 'match',
@@ -150,7 +164,7 @@ export default function blocks(
 
       return {
         ...state,
-        board: boardCopy,
+        board: createCellGrid(boardCopy),
         joinning: erasedPiece(),
         floating: floatingCopy,
         matching: matchingRows,
@@ -168,7 +182,12 @@ export default function blocks(
       return { ...INITIAL_STATE, piece: refill(state) };
     case 'floating/fall':
       for (let i = 0; i < state.floating.length; i++) {
-        testFloatingFallCollision(state.floating[i], state.board, state.limits, i);
+        testFloatingFallCollision(
+          state.floating[i],
+          getGridFromCells(state.board),
+          state.limits,
+          i,
+        );
       }
       return {
         ...state,

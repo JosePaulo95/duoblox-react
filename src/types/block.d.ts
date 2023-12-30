@@ -11,10 +11,16 @@ export type Block = {
 
 export type BlocksState = {
   piece: Block;
-  board: Grid;
+  board: CellGrid;
   limits: Grid;
   joinning: Block;
   floating: Block[];
   matching: Block[];
   particles: Block;
 };
+
+export type Cell = {
+  type: number;
+};
+
+export type CellGrid = Cell[][];

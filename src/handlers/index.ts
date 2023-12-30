@@ -1,12 +1,14 @@
 import { Dispatch } from 'react';
 
+import { configs } from '../configs';
 import {
   countCombinations,
   countExactCombinations,
+  getGridFromCells,
   hasAnyCombinations,
   isEmptyPiece,
 } from '../controller';
-import { configs } from '../configs';
+import { BlocksState } from '../types/block';
 import { BlockTouchInput, BoardInput } from '../types/input';
 
 //TODO considerar o uso de UseCallbacks
@@ -16,11 +18,14 @@ const isTimeToMoveDown = (ticks: number) => {
 };
 
 export const handleMatches = async (
-  blocks: any,
+  blocks: BlocksState,
   ticks: number,
   dispatch: Dispatch<any>,
 ): Promise<void> => {
-  const matches_count = countExactCombinations(blocks.board, configs.playable_height);
+  const matches_count = countExactCombinations(
+    getGridFromCells(blocks.board),
+    configs.playable_height,
+  );
   if (matches_count > 0) {
     dispatch({ type: 'board/combinations' });
     dispatch({ type: 'score/increment', payload: matches_count });
@@ -62,7 +67,6 @@ export const handleUserInput = (
   //   dispatch({ type: 'board/move-left', payload: input_horizontal.index });
   //   dispatch({ type: 'audio/play', payload: 'play_move' });
   // }
-
   // if (input_vertical.delta > 0) {
   //   dispatch({ type: 'board/move-down', payload: input_vertical.index });
   //   dispatch({ type: 'audio/play', payload: 'play_move' });

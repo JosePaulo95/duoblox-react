@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
 import BoardContainer from '../components/BoardContainer';
+import CellGridView from '../components/CellGridView';
 import GridView from '../components/GridView';
 import GroupPieceView from '../components/GroupPieceView';
 import InputGrid from '../components/InputGrid';
@@ -66,17 +67,21 @@ function ContainerBoard({ blocks, ticks, dispatch }: ContainerBoardProps) {
   return (
     <BoardContainer>
       <GridView grid={blocks.limits}></GridView>
+
       <PieceView piece={blocks.particles}></PieceView>
-      <PieceView piece={blocks.piece} section="sides"></PieceView>
+
+      {/* <PieceView piece={blocks.piece} section="sides"></PieceView>
       <GroupPieceView pieces={blocks.floating} section="sides"></GroupPieceView>
       <PieceView piece={blocks.joinning} section="sides"></PieceView>
       <GridView grid={blocks.board} section="sides"></GridView>
-      <GroupPieceView pieces={blocks.matching} section="sides"></GroupPieceView>
+      <GroupPieceView pieces={blocks.matching} section="sides"></GroupPieceView> */}
+
       <PieceView piece={blocks.piece} section="front"></PieceView>
       <GroupPieceView pieces={blocks.floating} section="front"></GroupPieceView>
       <PieceView piece={blocks.joinning} section="front"></PieceView>
-      <GridView grid={blocks.board} section="front"></GridView>
       <GroupPieceView pieces={blocks.matching} section="front"></GroupPieceView>
+      <CellGridView grid={blocks.board} section="front"></CellGridView>
+
       <InputGrid grid={inputGrid} onInput={catchBlockInput}></InputGrid>
       {/* <GridView grid={displayCurrentGrid(blocks.piece)}></GridView> isso aqui mostra grid do dados ajuda a debugar*/}
     </BoardContainer>
