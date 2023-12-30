@@ -55,7 +55,7 @@ export const refill = (boardState?: BlocksState): Piece => {
     ? calcGridPosFloatingJoin(boardState).slice(-configs.playable_height)
     : emptyPlayablePiece();
   const grid = generateRefillFor(currentGrid);
-  const typed = fillGridRandomly(grid, [1, 2, 1, 1]);
+  const typed = fillGridRandomly(grid, [1, 2, 3, 4]);
   const wrapped = wrapGrid(typed, configs.width, configs.height);
   const piece = createPiece([wrapped]);
   return piece;

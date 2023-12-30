@@ -16,6 +16,7 @@ import {
   handleResetPiece,
   handleUserInput,
 } from '../handlers';
+import useInput from '../input/useInput';
 // import { keyboardController } from '../input/keyboardInput';
 import { BlocksState } from '../types/block';
 import { BlockTouchInput } from '../types/input';
@@ -38,19 +39,7 @@ export type ContainerBoardProps = PropsFromRedux;
 
 function ContainerBoard({ blocks, ticks, dispatch }: ContainerBoardProps) {
   const inputGrid = cleanInputGrid();
-
-  const catchBlockInput = (
-    rowIndex: number,
-    columnIndex: number,
-    blockInput: BlockTouchInput,
-  ) => {
-    console.log('aaa');
-    // if (inputGrid[rowIndex] && inputGrid[rowIndex][columnIndex] !== undefined) {
-    //   inputGrid[rowIndex][columnIndex] = blockInput;
-    // } else {
-    //   console.error('Índices fornecidos estão fora dos limites da grid.');
-    // }
-  };
+  const { consumeInput, catchBlockInput } = useInput();
 
   useEffect(() => {
     try {
@@ -58,7 +47,7 @@ function ContainerBoard({ blocks, ticks, dispatch }: ContainerBoardProps) {
       handleResetPiece(blocks, dispatch);
       handleFloatingsGoingDown(blocks, ticks, dispatch);
       handlePieceGoingDown(blocks, ticks, dispatch);
-      handleUserInput(inputGrid, dispatch);
+      handleUserInput(consumeInput, dispatch);
     } catch (collision) {
       handleCollision(collision as Error, dispatch);
     }

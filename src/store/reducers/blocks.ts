@@ -38,7 +38,7 @@ const INITIAL_STATE: BlocksState = {
   matching: [],
   particles: createParticles(),
 };
-const keys = { matching: 0, joinning: 0, particles: 0 };
+const keys = { matching: 0, joinning: 0, particles: 0, cells: 0 };
 
 export default function blocks(
   state: BlocksState = INITIAL_STATE,
@@ -85,8 +85,9 @@ export default function blocks(
         piece: { ...state.piece, y: state.piece.y + distance, anim_state: 'follow' },
       };
     case 'board/touch':
-      boardCopy = state.board;
-      // boardCopy[action.payload.x][action.payload.y].anim_state = 'shaking';
+      boardCopy = state.board.map((row) => row.map((cell) => ({ ...cell })));
+      boardCopy[action.payload.x][action.payload.y].anim_state = 'shaking';
+      boardCopy[action.payload.x][action.payload.y].key = keys.cells++;
       return {
         ...state,
         board: boardCopy,

@@ -20,7 +20,9 @@ export type BlocksState = {
 };
 
 export type Cell = {
+  key?: number;
   type: number;
+  anim_state: string;
 };
 
 export type CellGrid = Cell[][];

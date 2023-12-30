@@ -1,10 +1,10 @@
-import Block from '../components/Block';
+import Cell from '../components/Cell';
 import EmptyBlock from '../components/EmptyBlock';
 import Particle from '../components/Particle';
 import styles from '../styles/blocks.module.css';
-import { Cell } from '../types/block';
+import { Cell as CellType } from '../types/block';
 interface BlockFactoryInterface {
-  cell: Cell;
+  cell: CellType;
   section?: string;
   anim?: string;
   anim_delay?: number;
@@ -20,10 +20,11 @@ const CellFactory = (props: BlockFactoryInterface) => {
       return <Particle anim={props.anim} />;
     default:
       return (
-        <Block
+        <Cell
+          key={props.cell.key}
           type={props.cell.type}
           section={props.section}
-          anim={props.anim}
+          anim={props.cell.anim_state}
           anim_delay={props.anim_delay}
         />
       );

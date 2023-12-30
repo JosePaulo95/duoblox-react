@@ -5,7 +5,7 @@ import { BlockTouchInput } from '../types/input';
 
 type InputGridProps = {
   grid: BlockTouchInput[][] | undefined;
-  onInput: (rowIndex: number, columnIndex: number, blockInput: BlockTouchInput) => void; // Tipo da função de callback
+  onInput: (blockInput: BlockTouchInput) => void; // Tipo da função de callback
 };
 
 const InputGrid = ({ grid, onInput }: InputGridProps) => {
@@ -22,8 +22,10 @@ const InputGrid = ({ grid, onInput }: InputGridProps) => {
                     key={columnIndex}
                     className={`${styles.block}`}
                     onClick={() =>
-                      onInput(rowIndex, columnIndex, {
+                      onInput({
                         type: 'click',
+                        x: rowIndex,
+                        y: columnIndex,
                         direction: null,
                         delta: null,
                       })
