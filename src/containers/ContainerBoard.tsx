@@ -7,6 +7,12 @@ import GridView from '../components/GridView';
 import GroupPieceView from '../components/GroupPieceView';
 import InputGrid from '../components/InputGrid';
 import PieceView from '../components/PieceView';
+import {
+  rubikWrapBlock,
+  rubikWrapCellGrid,
+  rubikWrapGrid,
+  wrapGrid,
+} from '../controller';
 import { cleanInputGrid } from '../factories/InputFactory';
 import {
   handleCollision,
@@ -38,7 +44,6 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 export type ContainerBoardProps = PropsFromRedux;
 
 function ContainerBoard({ blocks, ticks, dispatch }: ContainerBoardProps) {
-  const inputGrid = cleanInputGrid();
   const { consumeInput, catchBlockInput } = useInput();
 
   useEffect(() => {
@@ -55,23 +60,23 @@ function ContainerBoard({ blocks, ticks, dispatch }: ContainerBoardProps) {
 
   return (
     <BoardContainer>
-      <GridView grid={blocks.limits}></GridView>
-
-      <PieceView piece={blocks.particles}></PieceView>
-
-      {/* <PieceView piece={blocks.piece} section="sides"></PieceView>
-      <GroupPieceView pieces={blocks.floating} section="sides"></GroupPieceView>
-      <PieceView piece={blocks.joinning} section="sides"></PieceView>
-      <GridView grid={blocks.board} section="sides"></GridView>
-      <GroupPieceView pieces={blocks.matching} section="sides"></GroupPieceView> */}
-
-      <PieceView piece={blocks.piece} section="front"></PieceView>
-      <GroupPieceView pieces={blocks.floating} section="front"></GroupPieceView>
+      <GridView grid={rubikWrapGrid(blocks.limits)}></GridView>
+      <PieceView piece={rubikWrapBlock(blocks.particles)}></PieceView>
+      <PieceView piece={rubikWrapBlock(blocks.piece)} section="front"></PieceView>
+      <GroupPieceView
+        pieces={blocks.floating.map(rubikWrapBlock)}
+        section="front"
+      ></GroupPieceView>
       {/* <PieceView piece={blocks.joinning} section="front"></PieceView> */}
-      <GroupPieceView pieces={blocks.matching} section="front"></GroupPieceView>
-      <CellGridView grid={blocks.board} section="front"></CellGridView>
-
-      <InputGrid grid={inputGrid} onInput={catchBlockInput}></InputGrid>
+      <GroupPieceView
+        pieces={blocks.matching.map(rubikWrapBlock)}
+        section="front"
+      ></GroupPieceView>
+      <CellGridView grid={rubikWrapCellGrid(blocks.board)} section="front"></CellGridView>
+      <InputGrid
+        grid={rubikWrapGrid(blocks.limits)}
+        onInput={catchBlockInput}
+      ></InputGrid>
       {/* <GridView grid={displayCurrentGrid(blocks.piece)}></GridView> isso aqui mostra grid do dados ajuda a debugar*/}
     </BoardContainer>
   );

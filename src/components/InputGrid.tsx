@@ -1,10 +1,11 @@
 import React from 'react';
 
 import styles from '../styles/blocks.module.css';
+import { Grid } from '../types';
 import { BlockTouchInput } from '../types/input';
 
 type InputGridProps = {
-  grid: BlockTouchInput[][] | undefined;
+  grid: Grid | undefined;
   onInput: (blockInput: BlockTouchInput) => void; // Tipo da função de callback
 };
 

@@ -1,7 +1,8 @@
 import { configs } from '../configs';
-import { createPiece, emptyGrid } from '../factories/PieceFactory';
+import { createCellGrid, createPiece, emptyGrid } from '../factories/PieceFactory';
 import { Block, Grid } from '../types';
 import { CellGrid } from '../types/block';
+import { BlockTouchInput } from '../types/input';
 import { splitDisconnectedGraphs } from './graph';
 
 export const getCurrentGrid = (block: Block): Grid | undefined => {
@@ -11,6 +12,33 @@ export const getCurrentGrid = (block: Block): Grid | undefined => {
     block.y,
   );
   return b;
+};
+
+export const rubikWrapGrid = (grid: Grid): Grid => {
+  if (grid && grid[0]) {
+    return wrapGrid(grid, grid[0].length + 2, grid.length + 2);
+  } else {
+    return grid;
+  }
+};
+
+export const rubikWrapBlock = (piece: Block): Block => {
+  if (piece) {
+    return {
+      ...piece,
+      initial_grid: piece.initial_grid.map(rubikWrapGrid),
+    };
+  } else {
+    return piece;
+  }
+};
+
+export const rubikWrapCellGrid = (cell_grid: CellGrid): CellGrid => {
+  const a = getGridFromCells(cell_grid);
+  const b = rubikWrapGrid(a);
+  const c = createCellGrid(b);
+
+  return c;
 };
 
 export const getGridFromCells = (cell_grid: CellGrid): Grid => {
