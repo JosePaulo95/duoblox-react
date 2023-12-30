@@ -125,6 +125,20 @@ export const join = (boardA: number[][], boardB: number[][]): Grid => {
   return join;
 };
 
+export const joinCells = (boardA: CellGrid, boardB: CellGrid): CellGrid => {
+  const join = boardA.map((row) => [...row]); // cria uma cópia de boardA
+
+  for (let i = 0; i < boardB.length; i++) {
+    for (let j = 0; j < boardB[i].length; j++) {
+      if (boardB[i][j].type > 0) {
+        join[i][j] = boardB[i][j];
+      }
+    }
+  }
+
+  return join;
+};
+
 const hasSameDimensions = (boardA: number[][], boardB: number[][]): boolean => {
   return boardA.length == boardB.length && boardA[0]?.length == boardB[0]?.length;
 };

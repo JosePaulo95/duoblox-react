@@ -30,6 +30,14 @@ const variants: Variants = {
   shaking: (piece) => ({
     scale: [1.2, 1],
   }),
+  moveY: () => ({
+    y: '-100%', // Move a célula para 100% da altura para cima, o que geralmente é a altura de uma célula adjacente.
+  }),
+  splash: (piece) => ({
+    // scaleY: [0.5, 1],
+    scaleX: [0.95, 1.05, 0.95, 1],
+    // ease: 'easeIn',
+  }),
 };
 
 const Cell = ({

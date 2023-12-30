@@ -56,12 +56,13 @@ export const handlePieceGoingDown = (
 };
 
 export const handleUserInput = (
-  inputConsumer: () => BlockTouchInput,
+  consumeInput: () => BlockTouchInput,
   dispatch: Dispatch<any>,
 ) => {
-  const input = inputConsumer();
+  const input = consumeInput();
   if (input.type) {
-    dispatch({ type: 'board/touch', payload: input });
+    // dispatch({ type: 'board/touch', payload: input });
+    dispatch({ type: 'cell/move', payload: input });
   }
   // if (input_horizontal.delta > 0) {
   //   dispatch({ type: 'board/move-right', payload: input_horizontal.index });

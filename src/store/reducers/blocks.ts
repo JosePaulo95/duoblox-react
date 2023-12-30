@@ -9,6 +9,7 @@ import { cleanInputGrid } from '../../factories/InputFactory';
 import { createParticles } from '../../factories/ParticlesData';
 import {
   createCellGrid,
+  createJoinningCells,
   createPiece,
   emptyCellGrid,
   emptyGrid,
@@ -106,22 +107,14 @@ export default function blocks(
       };
     case 'piece/join':
       grid_aux = getCurrentGrid(state.piece);
-      boardCopy = getGridFromCells(state.board);
-
-      if (grid_aux) {
-        pieceCopy = {
-          ...createPiece([grid_aux]),
-          anim_state: 'biggerSplash',
-          key: keys.joinning++,
-        } as Block;
-        return {
-          ...state,
-          joinning: pieceCopy,
-          board: createCellGrid(join(grid_aux, boardCopy)),
-          piece: erasedPiece(),
-        };
-      }
-      return state;
+      if (!grid_aux) return state;
+      boardCopy = createJoinningCells(state.board, grid_aux);
+      return {
+        ...state,
+        joinning: erasedPiece(),
+        board: boardCopy,
+        piece: erasedPiece(),
+      };
     case 'floating/join':
       floatingCopy = state.floating.slice();
       floatingCopy.splice(action.payload, 1);
@@ -198,6 +191,16 @@ export default function blocks(
             y: i.y + 1,
           };
         }),
+      };
+    case 'cell/move':
+      boardCopy = state.board.map((row) => row.map((cell) => ({ ...cell })));
+      for (let i = 0; i < 3; i++) {
+        boardCopy[action.payload.x + i][action.payload.y].anim_state = 'moveY';
+        boardCopy[action.payload.x + i][action.payload.y].key = keys.cells++;
+      }
+      return {
+        ...state,
+        board: boardCopy,
       };
     default:
       return state;

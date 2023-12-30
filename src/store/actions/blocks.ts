@@ -1,3 +1,5 @@
+import { BlockTouchInput } from '../../types/input';
+
 type PieceMoveDownAction = {
   type: 'piece/move-down';
 };
@@ -48,6 +50,11 @@ type FloatingFallAction = {
   type: 'floating/fall';
 };
 
+type CellMove = {
+  type: 'cell/move';
+  payload: { x: number; y: number };
+};
+
 export type BlocksAction =
   | PieceMoveDownAction
   | PieceMoveDownMaxAction
@@ -60,4 +67,5 @@ export type BlocksAction =
   | BoardTouchAction
   | BoardCombinationsAction
   | BlocksResetAction
-  | FloatingFallAction;
+  | FloatingFallAction
+  | CellMove;

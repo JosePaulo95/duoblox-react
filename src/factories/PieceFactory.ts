@@ -17,6 +17,7 @@ import {
   getCurrentGrid,
   getGridFromCells,
   join,
+  joinCells,
   transform,
   wrap,
   wrapGrid,
@@ -123,6 +124,17 @@ export const limitsPiece = () => {
 export const createCellGrid = (grid: Grid): CellGrid => {
   const as_cells = grid.map((row) => row.map((n) => ({ type: n } as Cell)));
   return as_cells;
+};
+
+export const createJoinningCells = (
+  cell_grid: CellGrid,
+  joinning_grid: Grid,
+): CellGrid => {
+  const joinning_cells = joinning_grid.map((row) =>
+    row.map((n) => ({ type: n, anim_state: 'splash' } as Cell)),
+  );
+  const result = joinCells(cell_grid, joinning_cells);
+  return result;
 };
 
 export const createPiece = (initial_grid: Grid[]): Piece => {
