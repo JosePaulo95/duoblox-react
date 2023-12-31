@@ -200,15 +200,15 @@ export default function blocks(
         }),
       };
     case 'cell/move':
-      boardCopy = state.board.map((row) => row.map((cell) => ({ ...cell })));
+      boardCopy = state.rubik_board.map((row) => row.map((cell) => ({ ...cell })));
       for (let i = 0; i < 3; i++) {
         boardCopy[action.payload.x + i][action.payload.y].anim_state = 'moveY';
         boardCopy[action.payload.x + i][action.payload.y].key = keys.cells++;
       }
       return {
         ...state,
-        board: boardCopy,
-        rubik_board: rubikWrapCellGrid(boardCopy),
+        // board: boardCopy,
+        rubik_board: boardCopy,
       };
     default:
       return state;
