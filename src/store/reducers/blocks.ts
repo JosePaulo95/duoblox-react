@@ -1,3 +1,4 @@
+import { configs } from '../../configs';
 import {
   BoardState,
   getCurrentGrid,
@@ -33,8 +34,8 @@ import {
 
 const INITIAL_STATE: BlocksState = {
   piece: refill(),
-  board: emptyCellGrid(),
-  rubik_board: rubikWrapCellGrid(emptyCellGrid()),
+  board: emptyGrid(),
+  rubik_board: rubikWrapCellGrid(emptyGrid()),
   limits: limitsPiece(),
   joinning: erasedPiece(),
   floating: [],
@@ -61,7 +62,7 @@ export default function blocks(
         return state;
       }
       // grid_aux = getCurrentGrid(state.joinning);
-      testDownCollision(state.piece, getGridFromCells(state.board));
+      testDownCollision(state.piece, state.board);
       return {
         ...state,
         piece: { ...state.piece, y: state.piece.y + 1, anim_state: 'follow' },
@@ -74,10 +75,7 @@ export default function blocks(
       // eslint-disable-next-line no-constant-condition
       for (let i = 0; i < 20; i++) {
         try {
-          testDownCollision(
-            { ...state.piece, y: state.piece.y + distance },
-            getGridFromCells(state.board),
-          );
+          testDownCollision({ ...state.piece, y: state.piece.y + distance }, state.board);
           distance++;
         } catch (error) {
           break;
@@ -88,22 +86,21 @@ export default function blocks(
         piece: { ...state.piece, y: state.piece.y + distance, anim_state: 'follow' },
       };
     case 'board/touch':
-      boardCopy = state.board.map((row) => row.map((cell) => ({ ...cell })));
-      boardCopy[action.payload.x][action.payload.y].anim_state = 'shaking';
-      boardCopy[action.payload.x][action.payload.y].key = keys.cells++;
+      boardCopy = state.rubik_board.map((row) => row.map((cell) => ({ ...cell })));
+      boardCopy[action.payload.x - 1][action.payload.y - 1].anim_state = 'shaking';
+      boardCopy[action.payload.x - 1][action.payload.y - 1].key = keys.cells++;
       return {
         ...state,
-        board: boardCopy,
-        rubik_board: rubikWrapCellGrid(boardCopy),
+        rubik_board: boardCopy,
       };
     case 'piece/move-left':
-      testSideCollision(state.piece, getGridFromCells(state.board), -1);
+      testSideCollision(state.piece, state.board, -1);
       return {
         ...state,
         piece: { ...state.piece, x: state.piece.x - 1 },
       };
     case 'piece/rotate':
-      pieceCopy = testRotationCollision(state.piece, getGridFromCells(state.board));
+      pieceCopy = testRotationCollision(state.piece, state.board);
       return {
         ...state,
         piece: pieceCopy,
@@ -111,7 +108,7 @@ export default function blocks(
     case 'piece/join':
       grid_aux = getCurrentGrid(state.piece);
       if (!grid_aux) return state;
-      boardCopy = createJoinningCells(state.board, grid_aux);
+      boardCopy = join(state.board, grid_aux);
       return {
         ...state,
         joinning: erasedPiece(),
@@ -129,7 +126,7 @@ export default function blocks(
           anim_state: 'biggerSplash',
           key: keys.joinning++,
         } as Block;
-        boardCopy = createCellGrid(join(grid_aux, getGridFromCells(state.board)));
+        boardCopy = join(grid_aux, state.board);
         return {
           ...state,
           joinning: pieceCopy,
@@ -140,7 +137,7 @@ export default function blocks(
       }
       return state;
     case 'piece/reset':
-      testJoinCollision(getGridFromCells(state.board), state.limits);
+      testJoinCollision(state.board, state.limits);
       return {
         ...state,
         piece: {
@@ -155,7 +152,7 @@ export default function blocks(
         remaining: boardCopy,
         floating: floatingCopy,
         matching: matchingCopy,
-      } = removeMatches(getGridFromCells(state.board)) as BoardState);
+      } = removeMatches(state.board) as BoardState);
       matchingRows = matchingCopy.map((i) => ({
         ...i,
         anim_state: 'match',
@@ -164,8 +161,8 @@ export default function blocks(
 
       return {
         ...state,
-        board: createCellGrid(boardCopy),
-        rubik_board: rubikWrapCellGrid(createCellGrid(boardCopy)),
+        board: boardCopy,
+        rubik_board: rubikWrapCellGrid(boardCopy),
         joinning: erasedPiece(),
         floating: floatingCopy,
         matching: matchingRows,
@@ -183,12 +180,7 @@ export default function blocks(
       return { ...INITIAL_STATE, piece: refill(state) };
     case 'floating/fall':
       for (let i = 0; i < state.floating.length; i++) {
-        testFloatingFallCollision(
-          state.floating[i],
-          getGridFromCells(state.board),
-          state.limits,
-          i,
-        );
+        testFloatingFallCollision(state.floating[i], state.board, state.limits, i);
       }
       return {
         ...state,
@@ -200,16 +192,21 @@ export default function blocks(
         }),
       };
     case 'cell/move':
-      boardCopy = state.rubik_board.map((row) => row.map((cell) => ({ ...cell })));
-      for (let i = 0; i < 3; i++) {
-        boardCopy[action.payload.x + i][action.payload.y].anim_state = 'moveY';
-        boardCopy[action.payload.x + i][action.payload.y].key = keys.cells++;
-      }
-      return {
-        ...state,
-        // board: boardCopy,
-        rubik_board: boardCopy,
-      };
+      return state;
+    // boardCopy = gridRubikAnim(state.rubik_board, action.payload);
+    // grid_aux = gridPosMove(state.board);
+
+    // state.rubik_board.map((row) => row.map((cell) => ({ ...cell })));
+
+    // for (let i = 0; i < configs.playable_height + 2; i++) {
+    //   boardCopy[action.payload.x + i - 1][action.payload.y].anim_state = 'moveY';
+    //   boardCopy[action.payload.x + i - 1][action.payload.y].key = keys.cells++;
+    // }
+    // return {
+    //   ...state,
+    //   // board: boardCopy,
+    //   rubik_board: boardCopy,
+    // };
     default:
       return state;
   }

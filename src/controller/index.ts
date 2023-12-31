@@ -33,40 +33,41 @@ export const rubikWrapBlock = (piece: Block): Block => {
   }
 };
 
-export const rubikWrapCellGrid = (cell_grid: CellGrid): CellGrid => {
-  const original = getGridFromCells(cell_grid);
+export const rubikWrapCellGrid = (grid: Grid): CellGrid => {
   // const corte = original.slice(-configs.playable_height);
-  const wrapped = rubikWrapGrid(original);
+  const wrapped = rubikWrapGrid(grid);
 
-  const first_row = original.length - configs.playable_height;
-  const last_row = original.length - 1;
-  const first_col = original[0].length - 1;
+  const first_row = grid.length - configs.playable_height;
+  const last_row = grid.length - 1;
+  const first_col = grid[0].length - 1;
   const last_col = 0;
 
   // Norte - Espelhando a última linha da matriz original na primeira linha do padding
-  for (let i = 0; i < original[0].length; i++) {
-    wrapped[original.length - configs.playable_height][1 + i] = original[last_row][i];
+  for (let i = 0; i < grid[0].length; i++) {
+    wrapped[grid.length - configs.playable_height][1 + i] = grid[last_row][i];
   }
 
   // Sul - Espelhando a primeira linha da matriz original na última linha do padding
-  for (let i = 0; i < original[0].length; i++) {
-    wrapped[wrapped.length - 1][1 + i] = original[first_row][i];
+  for (let i = 0; i < grid[0].length; i++) {
+    wrapped[wrapped.length - 1][1 + i] = grid[first_row][i];
   }
 
   // Oeste - Espelhando a última coluna da matriz original na primeira coluna do padding
-  for (let i = 0; i < original.length; i++) {
-    wrapped[1 + i][0] = original[i][first_col];
+  for (let i = 0; i < grid.length; i++) {
+    wrapped[1 + i][0] = grid[i][first_col];
   }
 
   // Leste - Espelhando a primeira coluna da matriz original na última coluna do padding
-  for (let i = 0; i < original.length; i++) {
-    wrapped[1 + i][wrapped[0].length - 1] = original[i][last_col];
+  for (let i = 0; i < grid.length; i++) {
+    wrapped[1 + i][wrapped[0].length - 1] = grid[i][last_col];
   }
 
   const c = createCellGrid(wrapped);
 
   return c;
 };
+
+export const gridRubikAnim = (cell_grid, input) => {};
 
 export const getGridFromCells = (cell_grid: CellGrid): Grid => {
   const grid = cell_grid.map((row) => row.map((cell) => cell.type));

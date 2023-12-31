@@ -11,7 +11,7 @@ export type Block = {
 
 export type BlocksState = {
   piece: Block;
-  board: CellGrid;
+  board: Grid;
   rubik_board: CellGrid;
   limits: Grid;
   joinning: Block;
