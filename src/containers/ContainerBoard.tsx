@@ -20,6 +20,7 @@ import {
   handleMatches,
   handlePieceGoingDown,
   handleResetPiece,
+  handleUpdateView,
   handleUserInput,
 } from '../handlers';
 import useInput from '../input/useInput';
@@ -48,6 +49,7 @@ function ContainerBoard({ blocks, ticks, dispatch }: ContainerBoardProps) {
 
   useEffect(() => {
     try {
+      handleUpdateView(blocks, ticks, dispatch);
       handleMatches(blocks, ticks, dispatch);
       handleResetPiece(blocks, dispatch);
       handleFloatingsGoingDown(blocks, ticks, dispatch);

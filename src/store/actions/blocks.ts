@@ -26,7 +26,7 @@ type PieceJoinAction = {
 
 type BoardTouchAction = {
   type: 'board/touch';
-  payload: { x: number; y: number };
+  payload: BlockTouchInput;
 };
 
 type FloatingJoinAction = {
@@ -52,7 +52,11 @@ type FloatingFallAction = {
 
 type CellMove = {
   type: 'cell/move';
-  payload: { x: number; y: number };
+  payload: BlockTouchInput;
+};
+
+type BoardUpdateRubikView = {
+  type: 'board/updateRubikView';
 };
 
 export type BlocksAction =
@@ -68,4 +72,5 @@ export type BlocksAction =
   | BoardCombinationsAction
   | BlocksResetAction
   | FloatingFallAction
-  | CellMove;
+  | CellMove
+  | BoardUpdateRubikView;

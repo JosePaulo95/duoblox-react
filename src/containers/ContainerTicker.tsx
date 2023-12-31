@@ -23,7 +23,7 @@ function ContainerTicker({ ticks, dispatch }: ContainerAudioProps) {
   useEffect(() => {
     const interval = setInterval(() => {
       dispatch({ type: 'ticker/increment' });
-    }, 50);
+    }, 200);
     return () => clearInterval(interval);
   }, [ticks]);
 

@@ -3,6 +3,8 @@ import {
   BoardState,
   getCurrentGrid,
   getGridFromCells,
+  gridPosMove,
+  gridRubikAnim,
   join,
   removeMatches,
   rubikWrapCellGrid,
@@ -113,7 +115,6 @@ export default function blocks(
         ...state,
         joinning: erasedPiece(),
         board: boardCopy,
-        rubik_board: rubikWrapCellGrid(boardCopy),
         piece: erasedPiece(),
       };
     case 'floating/join':
@@ -131,7 +132,6 @@ export default function blocks(
           ...state,
           joinning: pieceCopy,
           board: boardCopy,
-          rubik_board: rubikWrapCellGrid(boardCopy),
           floating: floatingCopy,
         };
       }
@@ -162,7 +162,6 @@ export default function blocks(
       return {
         ...state,
         board: boardCopy,
-        rubik_board: rubikWrapCellGrid(boardCopy),
         joinning: erasedPiece(),
         floating: floatingCopy,
         matching: matchingRows,
@@ -192,21 +191,19 @@ export default function blocks(
         }),
       };
     case 'cell/move':
-      return state;
-    // boardCopy = gridRubikAnim(state.rubik_board, action.payload);
-    // grid_aux = gridPosMove(state.board);
+      boardCopy = gridRubikAnim(state.rubik_board, action.payload, keys.cells);
+      grid_aux = gridPosMove(state.board, action.payload);
 
-    // state.rubik_board.map((row) => row.map((cell) => ({ ...cell })));
-
-    // for (let i = 0; i < configs.playable_height + 2; i++) {
-    //   boardCopy[action.payload.x + i - 1][action.payload.y].anim_state = 'moveY';
-    //   boardCopy[action.payload.x + i - 1][action.payload.y].key = keys.cells++;
-    // }
-    // return {
-    //   ...state,
-    //   // board: boardCopy,
-    //   rubik_board: boardCopy,
-    // };
+      return {
+        ...state,
+        board: grid_aux,
+        rubik_board: boardCopy,
+      };
+    case 'board/updateRubikView':
+      return {
+        ...state,
+        rubik_board: rubikWrapCellGrid(state.board),
+      };
     default:
       return state;
   }

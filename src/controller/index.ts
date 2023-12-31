@@ -1,7 +1,7 @@
 import { configs } from '../configs';
 import { createCellGrid, createPiece, emptyGrid } from '../factories/PieceFactory';
 import { Block, Grid } from '../types';
-import { CellGrid } from '../types/block';
+import { Cell, CellGrid } from '../types/block';
 import { BlockTouchInput } from '../types/input';
 import { splitDisconnectedGraphs } from './graph';
 
@@ -66,8 +66,6 @@ export const rubikWrapCellGrid = (grid: Grid): CellGrid => {
 
   return c;
 };
-
-export const gridRubikAnim = (cell_grid, input) => {};
 
 export const getGridFromCells = (cell_grid: CellGrid): Grid => {
   const grid = cell_grid.map((row) => row.map((cell) => cell.type));
@@ -500,4 +498,41 @@ export const fillGridRandomly = (grid: Grid, types: number[]): Grid => {
   }
 
   return newGrid;
+};
+
+export const gridPosMove = (board: Grid, input: BlockTouchInput): Grid => {
+  if (!input.x || !input.y) {
+    return board;
+  }
+  const copy = board.map((row) => row.map((cell) => Number(cell)));
+  const line = copy.map((row) => row[input.y - 1]).slice(-configs.playable_height);
+
+  //3 => 1
+  //4 => 2
+  //5 => 0
+
+  for (let i = 0; i < configs.playable_height; i++) {
+    copy[input.x + i - 1][input.y - 1] = line[(i + 1) % line.length];
+  }
+
+  return copy;
+};
+
+export const gridRubikAnim = (
+  cell_grid: CellGrid,
+  input: BlockTouchInput,
+  keys: number,
+): CellGrid => {
+  if (!input.x || !input.y) {
+    return cell_grid;
+  }
+
+  const copy = cell_grid.map((row) => row.map((cell) => ({ ...cell })));
+
+  for (let i = 0; i < configs.playable_height + 2; i++) {
+    copy[input.x + i - 1][input.y].anim_state = 'moveY';
+    copy[input.x + i - 1][input.y].key = keys++;
+  }
+
+  return copy;
 };

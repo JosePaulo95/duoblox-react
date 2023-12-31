@@ -14,7 +14,15 @@ import { BlockTouchInput, BoardInput } from '../types/input';
 //TODO considerar o uso de UseCallbacks
 
 const isTimeToMoveDown = (ticks: number) => {
-  return ticks % 10 == 0;
+  return ticks % 3 == 0;
+};
+
+export const handleUpdateView = async (
+  blocks: BlocksState,
+  ticks: number,
+  dispatch: Dispatch<any>,
+) => {
+  dispatch({ type: 'board/updateRubikView' });
 };
 
 export const handleMatches = async (
