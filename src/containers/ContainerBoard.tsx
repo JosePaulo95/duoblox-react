@@ -72,7 +72,7 @@ function ContainerBoard({ blocks, ticks, dispatch }: ContainerBoardProps) {
         pieces={blocks.matching.map(rubikWrapBlock)}
         section="front"
       ></GroupPieceView>
-      <CellGridView grid={rubikWrapCellGrid(blocks.board)} section="front"></CellGridView>
+      <CellGridView grid={blocks.rubik_board} section="front"></CellGridView>
       <InputGrid
         grid={rubikWrapGrid(blocks.limits)}
         onInput={catchBlockInput}

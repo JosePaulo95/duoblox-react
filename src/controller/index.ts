@@ -16,7 +16,7 @@ export const getCurrentGrid = (block: Block): Grid | undefined => {
 
 export const rubikWrapGrid = (grid: Grid): Grid => {
   if (grid && grid[0]) {
-    return wrapGrid(grid, grid[0].length + 2, grid.length + 2);
+    return addPadding(grid);
   } else {
     return grid;
   }
@@ -34,9 +34,36 @@ export const rubikWrapBlock = (piece: Block): Block => {
 };
 
 export const rubikWrapCellGrid = (cell_grid: CellGrid): CellGrid => {
-  const a = getGridFromCells(cell_grid);
-  const b = rubikWrapGrid(a);
-  const c = createCellGrid(b);
+  const original = getGridFromCells(cell_grid);
+  // const corte = original.slice(-configs.playable_height);
+  const wrapped = rubikWrapGrid(original);
+
+  const first_row = original.length - configs.playable_height;
+  const last_row = original.length - 1;
+  const first_col = original[0].length - 1;
+  const last_col = 0;
+
+  // Norte - Espelhando a última linha da matriz original na primeira linha do padding
+  for (let i = 0; i < original[0].length; i++) {
+    wrapped[original.length - configs.playable_height][1 + i] = original[last_row][i];
+  }
+
+  // Sul - Espelhando a primeira linha da matriz original na última linha do padding
+  for (let i = 0; i < original[0].length; i++) {
+    wrapped[wrapped.length - 1][1 + i] = original[first_row][i];
+  }
+
+  // Oeste - Espelhando a última coluna da matriz original na primeira coluna do padding
+  for (let i = 0; i < original.length; i++) {
+    wrapped[1 + i][0] = original[i][first_col];
+  }
+
+  // Leste - Espelhando a primeira coluna da matriz original na última coluna do padding
+  for (let i = 0; i < original.length; i++) {
+    wrapped[1 + i][wrapped[0].length - 1] = original[i][last_col];
+  }
+
+  const c = createCellGrid(wrapped);
 
   return c;
 };
@@ -45,6 +72,26 @@ export const getGridFromCells = (cell_grid: CellGrid): Grid => {
   const grid = cell_grid.map((row) => row.map((cell) => cell.type));
   return grid;
 };
+
+function addPadding(grid: Grid): Grid {
+  // Determinar a largura e altura da nova matriz
+  const newWidth = grid[0].length + 2;
+  const newHeight = grid.length + 2;
+
+  // Criar uma nova matriz preenchida com 0s
+  const newgrid = Array(newHeight)
+    .fill(0)
+    .map(() => Array(newWidth).fill(0));
+
+  // Copiar os valores da matriz original para a nova matriz, deslocando por 1 para a direita e para baixo
+  for (let i = 0; i < grid.length; i++) {
+    for (let j = 0; j < grid[i].length; j++) {
+      newgrid[i + 1][j + 1] = grid[i][j];
+    }
+  }
+
+  return newgrid;
+}
 
 export const wrapGrid = (
   original_grid: Grid,

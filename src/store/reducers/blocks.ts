@@ -4,6 +4,7 @@ import {
   getGridFromCells,
   join,
   removeMatches,
+  rubikWrapCellGrid,
 } from '../../controller';
 import { cleanInputGrid } from '../../factories/InputFactory';
 import { createParticles } from '../../factories/ParticlesData';
@@ -33,6 +34,7 @@ import {
 const INITIAL_STATE: BlocksState = {
   piece: refill(),
   board: emptyCellGrid(),
+  rubik_board: rubikWrapCellGrid(emptyCellGrid()),
   limits: limitsPiece(),
   joinning: erasedPiece(),
   floating: [],
@@ -92,6 +94,7 @@ export default function blocks(
       return {
         ...state,
         board: boardCopy,
+        rubik_board: rubikWrapCellGrid(boardCopy),
       };
     case 'piece/move-left':
       testSideCollision(state.piece, getGridFromCells(state.board), -1);
@@ -113,6 +116,7 @@ export default function blocks(
         ...state,
         joinning: erasedPiece(),
         board: boardCopy,
+        rubik_board: rubikWrapCellGrid(boardCopy),
         piece: erasedPiece(),
       };
     case 'floating/join':
@@ -125,10 +129,12 @@ export default function blocks(
           anim_state: 'biggerSplash',
           key: keys.joinning++,
         } as Block;
+        boardCopy = createCellGrid(join(grid_aux, getGridFromCells(state.board)));
         return {
           ...state,
           joinning: pieceCopy,
-          board: createCellGrid(join(grid_aux, getGridFromCells(state.board))),
+          board: boardCopy,
+          rubik_board: rubikWrapCellGrid(boardCopy),
           floating: floatingCopy,
         };
       }
@@ -159,6 +165,7 @@ export default function blocks(
       return {
         ...state,
         board: createCellGrid(boardCopy),
+        rubik_board: rubikWrapCellGrid(createCellGrid(boardCopy)),
         joinning: erasedPiece(),
         floating: floatingCopy,
         matching: matchingRows,
@@ -201,6 +208,7 @@ export default function blocks(
       return {
         ...state,
         board: boardCopy,
+        rubik_board: rubikWrapCellGrid(boardCopy),
       };
     default:
       return state;
