@@ -75,12 +75,12 @@ function ContainerBoard({ blocks, ticks, dispatch }: ContainerBoardProps) {
         pieces={blocks.matching.map(rubikWrapBlock)}
         section="front"
       ></GroupPieceView>
+      <GridMask grid={rubikWrapGrid(blocks.limits)}></GridMask>
       <CellGridView grid={blocks.rubik_board} section="front"></CellGridView>
       <InputGrid
         grid={rubikWrapGrid(blocks.limits)}
         onInput={catchBlockInput}
       ></InputGrid>
-      {/* <GridMask grid={rubikWrapGrid(blocks.limits)}></GridMask> */}
       {/* <GridView grid={displayCurrentGrid(blocks.piece)}></GridView> isso aqui mostra grid do dados ajuda a debugar*/}
     </BoardContainer>
   );

@@ -10,9 +10,7 @@ type GridMaskProps = {
   section?: string;
 };
 
-const Tabuleiro = ({ width, height, matriz }) => {
-  const numCols = 5; // Número de colunas para o tabuleiro
-  const numRows = 8; // Número de linhas para o tabuleiro
+const Tabuleiro = ({ width, height, numCols, numRows, matriz }) => {
   const celulaWidth = width / numCols; // Calcula a largura de cada célula
   const celulaHeight = height / numRows; // Calcula a altura de cada célula
 
@@ -44,17 +42,16 @@ const Tabuleiro = ({ width, height, matriz }) => {
             y={i * celulaHeight} // Posição y baseada na linha
             width={celulaWidth} // Largura de cada célula
             height={celulaHeight} // Altura de cada célula
-            fill="red" // Define a cor de preenchimento para células vazias
+            fill="transparent" // Define a cor de preenchimento para células vazias
           />,
         );
       }
     }
     tabuleiro.push(<g key={i}>{linha}</g>);
   }
-  // style={{ marginTop: celulaHeight * 0.95 }}
+  //
   return (
     <svg width={width} height={height}>
-      {tabuleiro}
       <mask id="myMask">{tabuleiro}</mask>
     </svg>
   );
@@ -89,6 +86,8 @@ const GridMask = ({ grid, section }: GridMaskProps) => {
             </tbody>
           </motion.table>
           <Tabuleiro
+            numCols={grid[0].length}
+            numRows={grid.length}
             width={tableDimensions.width}
             height={tableDimensions.height}
             matriz={grid}

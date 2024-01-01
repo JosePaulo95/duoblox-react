@@ -4,7 +4,7 @@
 
 .front::before, .input_front::before {
   content: "";
-  position: absolute;
+  /* position: absolute; */
   border-radius: 20%;
   width: 20%; /* Ajuste para controlar o tamanho do destaque interno */
   height: 60%; /* Ajuste para controlar o tamanho do destaque interno */
@@ -15,7 +15,7 @@
 
 .front, .side, .input_front {
   border-radius: 4px;
-  position: absolute;
+  /* position: absolute; */
   width: inherit;
   height: inherit;
 }

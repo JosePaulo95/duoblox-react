@@ -15,7 +15,7 @@ const CellGridView = ({ grid, section }: CellGridViewProps) => {
   return (
     <>
       {grid && (
-        <motion.table className={styles.blockGroup}>
+        <motion.table className={`${styles.blockGroup} ${styles.rubikGrid}`}>
           <tbody>
             {grid.map((row, i) => (
               <tr key={i}>
