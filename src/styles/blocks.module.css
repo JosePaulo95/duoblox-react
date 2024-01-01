@@ -171,3 +171,8 @@
 .blockGroup {
   position: absolute;
 }
+
+.rubikGrid{
+  mask: url(#myMask);
+  -webkit-mask: url(#myMask);
+}

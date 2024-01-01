@@ -3,6 +3,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import BoardContainer from '../components/BoardContainer';
 import CellGridView from '../components/CellGridView';
+import GridMask from '../components/GridMask';
 import GridView from '../components/GridView';
 import GroupPieceView from '../components/GroupPieceView';
 import InputGrid from '../components/InputGrid';
@@ -79,6 +80,7 @@ function ContainerBoard({ blocks, ticks, dispatch }: ContainerBoardProps) {
         grid={rubikWrapGrid(blocks.limits)}
         onInput={catchBlockInput}
       ></InputGrid>
+      {/* <GridMask grid={rubikWrapGrid(blocks.limits)}></GridMask> */}
       {/* <GridView grid={displayCurrentGrid(blocks.piece)}></GridView> isso aqui mostra grid do dados ajuda a debugar*/}
     </BoardContainer>
   );
