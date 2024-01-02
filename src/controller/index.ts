@@ -500,19 +500,68 @@ export const fillGridRandomly = (grid: Grid, types: number[]): Grid => {
   return newGrid;
 };
 
-export const gridPosMove = (board: Grid, input: BlockTouchInput): Grid => {
-  if (!input.x || !input.y) {
+export const gridPosMove = (
+  board: Grid,
+  input: BlockTouchInput,
+  playable_height: number = configs.playable_height,
+): Grid => {
+  if (input.x == null || input.y == null) {
     return board;
   }
+
   const copy = board.map((row) => row.map((cell) => Number(cell)));
-  const line = copy.map((row) => row[input.y - 1]).slice(-configs.playable_height);
+  const vertical_coords = copy
+    .map((row) => row[Number(input.y)])
+    .slice(-playable_height)
+    .map((_, row_index) => ({
+      x: playable_height + row_index,
+      y: Number(input.y),
+    }));
+  const horizontal_coords = copy[0].map((_, col_index) => ({
+    x: Number(input.x),
+    y: col_index,
+  }));
 
-  //3 => 1
-  //4 => 2
-  //5 => 0
+  if (input.direction == 'up') {
+    const rubiked = [...vertical_coords.slice(1), vertical_coords[0]];
+    const values = rubiked.map((i) => copy[i.x][i.y]);
 
-  for (let i = 0; i < configs.playable_height; i++) {
-    copy[input.x + i - 1][input.y - 1] = line[(i + 1) % line.length];
+    vertical_coords.forEach((p, index) => {
+      copy[p.x][p.y] = values[index];
+    });
+  }
+
+  if (input.direction == 'down') {
+    const rubiked = [
+      vertical_coords[vertical_coords.length - 1],
+      ...vertical_coords.slice(0, -1),
+    ];
+    const values = rubiked.map((i) => copy[i.x][i.y]);
+
+    vertical_coords.forEach((p, index) => {
+      copy[p.x][p.y] = values[index];
+    });
+  }
+
+  if (input.direction == 'left') {
+    const rubiked = [...horizontal_coords.slice(1), horizontal_coords[0]];
+    const values = rubiked.map((i) => copy[i.x][i.y]);
+
+    horizontal_coords.forEach((p, index) => {
+      copy[p.x][p.y] = values[index];
+    });
+  }
+
+  if (input.direction == 'right') {
+    const rubiked = [
+      horizontal_coords[horizontal_coords.length - 1],
+      ...horizontal_coords.slice(0, -1),
+    ];
+    const values = rubiked.map((i) => copy[i.x][i.y]);
+
+    horizontal_coords.forEach((p, index) => {
+      copy[p.x][p.y] = values[index];
+    });
   }
 
   return copy;
@@ -523,15 +572,48 @@ export const gridRubikAnim = (
   input: BlockTouchInput,
   keys: number,
 ): CellGrid => {
-  if (!input.x || !input.y) {
+  if (input.x == null || input.y == null) {
     return cell_grid;
   }
 
-  const copy = cell_grid.map((row) => row.map((cell) => ({ ...cell })));
+  input = { ...input, x: input.x + 1, y: input.y + 1 };
 
-  for (let i = 0; i < configs.playable_height + 2; i++) {
-    copy[input.x + i - 1][input.y].anim_state = 'moveY';
-    copy[input.x + i - 1][input.y].key = keys++;
+  const copy = cell_grid.map((row) => row.map((cell) => ({ ...cell })));
+  const vertical_coords = copy.map((row, row_index) => ({
+    x: row_index,
+    y: Number(input.y),
+  }));
+  const horizontal_coords = copy[0].map((col, col_index) => ({
+    x: Number(input.x),
+    y: col_index,
+  }));
+
+  if (input.direction == 'up') {
+    vertical_coords.forEach((coord) => {
+      copy[coord.x][coord.y].anim_state = 'moveUp';
+      copy[coord.x][coord.y].key = keys++;
+    });
+  }
+
+  if (input.direction == 'down') {
+    vertical_coords.forEach((coord) => {
+      copy[coord.x][coord.y].anim_state = 'moveDown';
+      copy[coord.x][coord.y].key = keys++;
+    });
+  }
+
+  if (input.direction == 'left') {
+    horizontal_coords.forEach((coord) => {
+      copy[coord.x][coord.y].anim_state = 'moveLeft';
+      copy[coord.x][coord.y].key = keys++;
+    });
+  }
+
+  if (input.direction == 'right') {
+    horizontal_coords.forEach((coord) => {
+      copy[coord.x][coord.y].anim_state = 'moveRight';
+      copy[coord.x][coord.y].key = keys++;
+    });
   }
 
   return copy;

@@ -8,7 +8,6 @@ const initialState = {
   x: null,
   y: null,
   direction: null,
-  delta: null,
 };
 
 const useInput = (state: BlockTouchInput = initialState) => {
