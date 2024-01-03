@@ -8,8 +8,8 @@
   "repository": "https://github.com/JosePaulo95/tetris-react",
   "scripts": {
     "dev": "vite --mode dev",
-    "build:dev": "vite --mode dev",
-    "build:prod": "vite --mode prod",
+    "build:dev": "vite build --mode dev",
+    "build:prod": "vite build --mode prod",
     "serve": "vite preview --mode dev --port 3001",
     "lint:fix": "eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix --ignore-path ./.gitignore",
     "lint:format": "prettier  --loglevel warn --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\" ",
@@ -23,7 +23,6 @@
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.1",
     "@use-gesture/react": "^10.3.0",
-    "audio-loader": "^1.0.3",
     "framer-motion": "^8.5.4",
     "game-inputs": "^0.7.0",
     "hammerjs": "^2.0.8",
